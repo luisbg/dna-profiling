@@ -45,11 +45,13 @@ def search_terms(words_path, genome_path, options):
                 for genome in gf:
                     if genome[0] == ">":        # Only compare header lines
                         found = False           # Look for word in header line.
-                        if word in genome:
+
+                        genome_l = genome.lower()
+                        if word.lower() in genome_l:
                             found = True
                         else:
                             for var in variations:     # If word isn't in line,
-                                if var in genome:      # check variations.
+                                if var.lower() in genome_l:      # check variations.
                                     found = True
 
                         if found:
