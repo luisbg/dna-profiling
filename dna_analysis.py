@@ -1,5 +1,14 @@
 #!/usr/bin/python
 
+"""dna_analysis.py: Analyzes DNA files."""
+
+__author__ = "Jackie Goordial and Luis de Bethencourt"
+__copyright__ = "Copyright 2014"
+__credits__ = ["Jackie Goordial", "Luis de Bethencourt"]
+__license__ = "MIT"
+__email__ = "luis@debethencourt.com"
+
+
 from optparse import OptionParser
 from sys import argv, exit
 
