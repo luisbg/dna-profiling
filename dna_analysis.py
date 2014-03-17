@@ -31,7 +31,7 @@ def search_terms(words_path, genome_path, options):
             word = word.strip('\n')[:-1]      # Strip line formatting data.
 
             if options.verbose:
-                print "Start search for: %s" % (word)
+                print "\nStart search for: %s" % (word)
 
             variations = []    # Store a list of variations of the word we want
             if " " in word:    # to search.
