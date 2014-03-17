@@ -12,12 +12,15 @@ __email__ = "luis@debethencourt.com"
 from optparse import OptionParser
 from sys import argv, exit
 
+_version = 0.1
 
-def search_terms(words_path, genome_path):
+
+def search_terms(words_path, genome_path, options):
     '''Search for terms in a genome file.'''
 
-    print "words file: %s" % (words_path)
-    print "genome file: %s\n" % (genome_path)
+    if options.verbose:
+        print "words file: %s" % (words_path)
+        print "genome file: %s\n" % (genome_path)
 
     # Open the file in words_path as wf
     with open(words_path) as wf:
@@ -26,6 +29,9 @@ def search_terms(words_path, genome_path):
         for word in wf:
             word_count = 0
             word = word.strip('\n')[:-1]      # Strip line formatting data.
+
+            if options.verbose:
+                print "Start search for: %s" % (word)
 
             variations = []    # Store a list of variations of the word we want
             if " " in word:    # to search.
@@ -38,23 +44,38 @@ def search_terms(words_path, genome_path):
             with open(genome_path) as gf:      # performance becomes an issue.
                 for genome in gf:
                     if genome[0] == ">":        # Only compare header lines
-                        if word in genome:      # Look for word in header line.
-                            # print genome
-                            word_count += 1
+                        found = False           # Look for word in header line.
+                        if word in genome:
+                            found = True
                         else:
                             for var in variations:     # If word isn't in line,
                                 if var in genome:      # check variations.
-                                    # print genome
-                                    word_count += 1
+                                    found = True
+
+                        if found:
+                            word_count += 1
+                            if options.verbose:
+                                print genome
 
             print "%s, %d" % (word, word_count)
 
 
 if __name__ == "__main__":
-    parser = OptionParser(usage='''
+    version = _version
+    parser = OptionParser(version='%%prog %s' % version,
+                          usage='''
+usage: %%prog [--version] [--verbose]
+
+Command-line DNA Analysis
+
 Positional arguments:
     search-terms [words file] [genome file]
+
+Examples:
+  %%prog --verbose search-terms searchwords.txt JG3.txt
 '''.strip('\n') % globals())
+    parser.add_option('-v', '--verbose', action='count', dest='verbose',
+                      default=0, help='Print more info')
     (options, args) = parser.parse_args(argv[1:])
 
     # Over engineered parameter handling, but flexible for future growth.
@@ -74,7 +95,7 @@ Positional arguments:
             words_path = args[1]
             genome_path = args[2]
             # If all is good, run search-terms with the files.
-            search_terms(words_path, genome_path)
+            search_terms(words_path, genome_path, options)
         else:
             print "missing data files"
             print "usage: search-terms [words file] [genome file]"
